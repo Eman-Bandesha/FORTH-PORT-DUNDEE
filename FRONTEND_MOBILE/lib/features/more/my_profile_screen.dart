@@ -3,21 +3,18 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../auth/data/auth_repository.dart';
+import '../auth/force_change_password_screen.dart';
 
 /// My Profile — read-only user details and change-password entry.
 class MyProfileScreen extends StatelessWidget {
   const MyProfileScreen({super.key});
 
   void _changePassword(BuildContext context) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(
-            '${AppStrings.changePassword} — ${AppStrings.comingSoon}',
-          ),
-        ),
-      );
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const ForceChangePasswordScreen(),
+      ),
+    );
   }
 
   @override

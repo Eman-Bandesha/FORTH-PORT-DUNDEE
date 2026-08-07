@@ -85,9 +85,12 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         AppSnackBar.error(context, e.message);
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        AppSnackBar.error(context, AppStrings.comingSoon);
+        AppSnackBar.error(
+          context,
+          'Sign in failed. Check your connection and try again.',
+        );
       }
     } finally {
       if (mounted) setState(() => _submitting = false);

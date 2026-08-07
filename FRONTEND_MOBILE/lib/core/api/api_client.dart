@@ -112,11 +112,28 @@ class ApiClient {
     Future<http.Response> Function() request, {
     required bool auth,
   }) async {
-    http.Response response = await request();
+    late final http.Response response;
+    try {
+      response = await request();
+    } catch (e) {
+      throw ApiException(
+        'Cannot reach the server. Check your connection and try again.',
+        statusCode: 0,
+        body: e.toString(),
+      );
+    }
     if (auth && response.statusCode == 401 && TokenStorage.refreshToken != null) {
       final bool refreshed = await _tryRefresh();
       if (refreshed) {
-        response = await request();
+        try {
+          response = await request();
+        } catch (e) {
+          throw ApiException(
+            'Cannot reach the server. Check your connection and try again.',
+            statusCode: 0,
+            body: e.toString(),
+          );
+        }
       }
     }
     if (response.statusCode >= 400) {

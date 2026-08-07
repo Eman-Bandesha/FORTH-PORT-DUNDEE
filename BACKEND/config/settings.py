@@ -147,6 +147,9 @@ if not DEBUG:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https://.*\.vercel\.app$",
         r"^https://.*\.netlify\.app$",
+        # Flutter web / local Vite / Expo when talking to the live API
+        r"^http://localhost:\d+$",
+        r"^http://127\.0\.0\.1:\d+$",
     ]
     _extra_regex = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").strip()
     if _extra_regex:
