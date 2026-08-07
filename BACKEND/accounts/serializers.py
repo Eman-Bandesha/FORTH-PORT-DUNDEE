@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -107,7 +105,7 @@ class AdminUserCreateSerializer(serializers.Serializer):
     )
     # Optional: admin may supply a password; otherwise a temp password is generated.
     password = serializers.CharField(
-        write_only=True, required=False, allow_blank=True, min_length=8
+        write_only=True, required=False, allow_blank=True
     )
     generate_temporary_password = serializers.BooleanField(required=False, default=True)
     send_setup_email = serializers.BooleanField(required=False, default=True)
@@ -177,7 +175,7 @@ class AdminUserUpdateSerializer(serializers.Serializer):
         choices=AccountStatus.choices, required=False
     )
     password = serializers.CharField(
-        write_only=True, required=False, allow_blank=True, min_length=8
+        write_only=True, required=False, allow_blank=True
     )
     reset_temporary_password = serializers.BooleanField(required=False, default=False)
     send_reset_email = serializers.BooleanField(required=False, default=True)
@@ -301,10 +299,10 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"confirm_password": "Passwords do not match."}
             )
-        try:
-            validate_password(attrs["new_password"])
-        except DjangoValidationError as exc:
-            raise serializers.ValidationError({"new_password": list(exc.messages)})
+        if not str(attrs["new_password"]):
+            raise serializers.ValidationError(
+                {"new_password": "Enter a new password."}
+            )
         return attrs
 
 
@@ -321,8 +319,8 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"confirm_password": "Passwords do not match."}
             )
-        try:
-            validate_password(attrs["new_password"])
-        except DjangoValidationError as exc:
-            raise serializers.ValidationError({"new_password": list(exc.messages)})
+        if not str(attrs.get("new_password") or ""):
+            raise serializers.ValidationError(
+                {"new_password": "Enter a new password."}
+            )
         return attrs

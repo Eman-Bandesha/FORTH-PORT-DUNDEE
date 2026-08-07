@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/responsive.dart';
 
 /// Shared chrome for the authentication screens.
 ///
@@ -45,13 +46,15 @@ class AuthScaffold extends StatelessWidget {
                 child: Center(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
-                      28,
+                      context.isTablet ? 40 : 28,
                       showBackButton ? 8 : 24,
-                      28,
+                      context.isTablet ? 40 : 28,
                       24,
                     ),
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 440),
+                      constraints: BoxConstraints(
+                        maxWidth: context.isTablet ? 520 : 440,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: crossAxisAlignment,

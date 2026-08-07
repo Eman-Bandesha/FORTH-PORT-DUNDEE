@@ -40,7 +40,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) return AppStrings.newPasswordRequired;
-    if (value.length < 8) return 'Use at least 8 characters';
     return null;
   }
 

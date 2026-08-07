@@ -54,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) return AppStrings.passwordRequired;
-    if (value.length < 6) return AppStrings.passwordTooShort;
     return null;
   }
 

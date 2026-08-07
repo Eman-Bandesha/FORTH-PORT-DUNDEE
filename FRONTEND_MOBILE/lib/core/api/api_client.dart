@@ -181,10 +181,34 @@ class ApiClient {
       final dynamic decoded = jsonDecode(body);
       if (decoded is Map<String, dynamic>) {
         if (decoded['detail'] is String) return decoded['detail'] as String;
+        if (decoded['detail'] is List && (decoded['detail'] as List).isNotEmpty) {
+          return (decoded['detail'] as List).first.toString();
+        }
         final List<dynamic>? nonField =
             decoded['non_field_errors'] as List<dynamic>?;
         if (nonField != null && nonField.isNotEmpty) {
           return nonField.first.toString();
+        }
+        // DRF field errors, e.g. {"new_password": ["This password is too common."]}
+        for (final String key in <String>[
+          'new_password',
+          'confirm_password',
+          'current_password',
+          'password',
+          'username',
+          'email',
+        ]) {
+          final dynamic value = decoded[key];
+          if (value is List && value.isNotEmpty) {
+            return value.first.toString();
+          }
+          if (value is String && value.isNotEmpty) return value;
+        }
+        for (final Object? value in decoded.values) {
+          if (value is List && value.isNotEmpty) {
+            return value.first.toString();
+          }
+          if (value is String && value.isNotEmpty) return value;
         }
       }
     } catch (_) {}

@@ -26,13 +26,13 @@ class ForthPortsApp extends StatelessWidget {
       // breaks on devices with very large accessibility font settings.
       builder: (BuildContext context, Widget? child) {
         final MediaQueryData data = MediaQuery.of(context);
+        final bool isTablet = data.size.shortestSide >= 600;
+        // Slightly larger type on tablets so auth/forms stay readable.
+        final double platformScale = data.textScaler.scale(1.0);
+        final double boost = isTablet ? 1.18 : 1.0;
+        final double clamped = (platformScale * boost).clamp(0.9, 1.4);
         return MediaQuery(
-          data: data.copyWith(
-            textScaler: data.textScaler.clamp(
-              minScaleFactor: 0.9,
-              maxScaleFactor: 1.3,
-            ),
-          ),
+          data: data.copyWith(textScaler: TextScaler.linear(clamped)),
           child: child!,
         );
       },

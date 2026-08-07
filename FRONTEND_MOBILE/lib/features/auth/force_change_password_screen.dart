@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../core/api/api_exception.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/api/api_exception.dart';
+import '../../core/utils/responsive.dart';
 import '../../shared/widgets/app_snackbar.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'auth_success_screen.dart';
@@ -73,6 +74,7 @@ class _ForceChangePasswordScreenState extends State<ForceChangePasswordScreen> {
           style: theme.textTheme.headlineSmall?.copyWith(
             color: AppColors.navy,
             fontWeight: FontWeight.w800,
+            fontSize: context.isTablet ? 28 : null,
           ),
         ),
         const SizedBox(height: 8),
@@ -82,6 +84,7 @@ class _ForceChangePasswordScreenState extends State<ForceChangePasswordScreen> {
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.textMuted,
             height: 1.4,
+            fontSize: context.isTablet ? 16 : null,
           ),
         ),
         const SizedBox(height: 24),
@@ -122,7 +125,6 @@ class _ForceChangePasswordScreenState extends State<ForceChangePasswordScreen> {
                   if (v == null || v.isEmpty) {
                     return AppStrings.newPasswordRequired;
                   }
-                  if (v.length < 8) return 'Use at least 8 characters';
                   return null;
                 },
               ),
