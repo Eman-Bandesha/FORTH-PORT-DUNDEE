@@ -72,6 +72,23 @@ class AuthSecurityTests(TestCase):
         self.assertTrue(res.data["must_change_password"])
         self.assertIn("access", res.data["tokens"])
 
+    def test_login_username_is_case_insensitive(self):
+        res = self.client.post(
+            "/api/v1/auth/login/",
+            {"username": "JSmith", "password": "StaffPass123!"},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["user"]["username"], "jsmith")
+
+    def test_login_accepts_email(self):
+        res = self.client.post(
+            "/api/v1/auth/login/",
+            {"username": "john.smith@forthports.com", "password": "StaffPass123!"},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 200)
+
     def test_inactive_user_cannot_login(self):
         self.staff.is_active = False
         self.staff.save()

@@ -34,13 +34,13 @@ def generate_otp_code(length: int = 6) -> str:
 
 
 def generate_temporary_password(length: int = 12) -> str:
-    alphabet = string.ascii_letters + string.digits + "!@#$%"
-    # Ensure complexity for Django validators
+    # Avoid `$` and lookalikes that break copy/paste from email clients.
+    alphabet = string.ascii_letters + string.digits + "!@#%*?"
     parts = [
         secrets.choice(string.ascii_uppercase),
         secrets.choice(string.ascii_lowercase),
         secrets.choice(string.digits),
-        secrets.choice("!@#$%"),
+        secrets.choice("!@#%*?"),
     ]
     parts += [secrets.choice(alphabet) for _ in range(max(0, length - 4))]
     secrets.SystemRandom().shuffle(parts)

@@ -112,7 +112,7 @@ class ApiClient {
     Future<http.Response> Function() request, {
     required bool auth,
   }) async {
-    late final http.Response response;
+    http.Response response;
     try {
       response = await request();
     } catch (e) {

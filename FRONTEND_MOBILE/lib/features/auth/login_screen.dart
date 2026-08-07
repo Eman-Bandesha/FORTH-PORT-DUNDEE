@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final AuthUser user = await AuthRepository.instance.login(
         username: _usernameController.text.trim(),
-        password: _passwordController.text,
+        password: _passwordController.text.trim(),
       );
       if (!mounted) return;
       if (user.mustChangePassword) {

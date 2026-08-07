@@ -68,17 +68,20 @@ class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        username = request.data.get("username") or request.data.get("email")
-        password = request.data.get("password")
+        username = (request.data.get("username") or request.data.get("email") or "")
+        password = request.data.get("password") or ""
+        username = str(username).strip()
+        password = str(password).strip()
         if not username or not password:
             return Response(
                 {"detail": "username (or email) and password are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Resolve user first to give a clear inactive message (without revealing
-        # whether password was correct when inactive).
-        candidate = resolve_active_user(str(username))
+        # Resolve by username or email (case-insensitive) first so we can:
+        # - return a clear inactive message
+        # - authenticate with the canonical DB username (Django is case-sensitive)
+        candidate = resolve_active_user(username)
         if candidate is not None:
             profile = _ensure_profile(candidate)
             if (
@@ -87,15 +90,11 @@ class LoginView(APIView):
             ):
                 return _account_blocked_response()
 
-        user = authenticate(request, username=username, password=password)
-        if user is None and "@" in str(username):
-            try:
-                match = User.objects.get(email__iexact=username)
-                user = authenticate(
-                    request, username=match.username, password=password
-                )
-            except User.DoesNotExist:
-                user = None
+            user = authenticate(
+                request, username=candidate.username, password=password
+            )
+        else:
+            user = None
 
         if user is None:
             return Response(
