@@ -144,6 +144,15 @@ if not DEBUG:
         for o in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
         if o.strip()
     ]
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://.*\.vercel\.app$",
+        r"^https://.*\.netlify\.app$",
+    ]
+    _extra_regex = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").strip()
+    if _extra_regex:
+        CORS_ALLOWED_ORIGIN_REGEXES.extend(
+            [p.strip() for p in _extra_regex.split(",") if p.strip()]
+        )
 
 CSRF_TRUSTED_ORIGINS = [
     o.strip()
