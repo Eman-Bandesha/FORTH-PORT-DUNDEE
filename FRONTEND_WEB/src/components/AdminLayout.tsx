@@ -12,14 +12,13 @@ type NavItem = {
 }
 
 const NAV: NavItem[] = [
-  { to: '/', label: 'Dashboard', icon: '▣', end: true },
-  { to: '/items', label: 'Items', icon: '▭' },
-  { to: '/stock-in', label: 'Stock In', icon: '⇩' },
-  { to: '/stock-history', label: 'Stock History', icon: '↺' },
-  { to: '/alerts', label: 'Low Stock Alerts', icon: '⚠' },
-  { to: '/reports', label: 'Reports', icon: '▤' },
-  { to: '/users', label: 'Users', icon: '👤' },
-  { to: '/settings', label: 'Settings', icon: '⚙', disabled: true },
+  { to: '/', label: 'Dashboard', icon: '🏠', end: true },
+  { to: '/items', label: 'Items', icon: '📦' },
+  { to: '/stock-in', label: 'Stock In', icon: '⬇️' },
+  { to: '/stock-history', label: 'Stock History', icon: '🕓' },
+  { to: '/alerts', label: 'Low Stock Alerts', icon: '⚠️' },
+  { to: '/reports', label: 'Reports', icon: '📊' },
+  { to: '/users', label: 'Users', icon: '👥' },
 ]
 
 const TITLES: Record<string, string> = {
@@ -131,7 +130,7 @@ export function AdminLayout() {
           </div>
           <div className="sidebar-logout">
             <button type="button" className="nav-item" onClick={() => void onLogout()}>
-              <span className="icon">⎋</span>
+              <span className="icon">🚪</span>
               Logout
             </button>
           </div>

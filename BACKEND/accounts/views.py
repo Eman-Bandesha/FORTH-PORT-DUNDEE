@@ -185,8 +185,12 @@ class UserViewSet(
         user = serializer.save()
         payload = UserSerializer(user).data
         temp = getattr(user, "_generated_temporary_password", None)
-        if temp and settings.DEBUG:
+        email_sent = bool(getattr(user, "_setup_email_sent", False))
+        # Always return temp password to admins so account setup still works
+        # when Brevo/SMTP is not configured on the host.
+        if temp:
             payload["temporary_password"] = temp
+        payload["email_sent"] = email_sent
         return Response(payload, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
@@ -199,8 +203,9 @@ class UserViewSet(
         user = serializer.save()
         payload = UserSerializer(user).data
         temp = getattr(user, "_generated_temporary_password", None)
-        if temp and settings.DEBUG:
+        if temp:
             payload["temporary_password"] = temp
+        payload["email_sent"] = bool(getattr(user, "_setup_email_sent", False))
         return Response(payload)
 
     def destroy(self, request, *args, **kwargs):
@@ -265,8 +270,9 @@ class UserViewSet(
         user = serializer.save()
         payload = UserSerializer(user).data
         temp = getattr(user, "_generated_temporary_password", None)
-        if temp and settings.DEBUG:
+        if temp:
             payload["temporary_password"] = temp
+        payload["email_sent"] = bool(getattr(user, "_setup_email_sent", False))
         return Response(payload)
 
 

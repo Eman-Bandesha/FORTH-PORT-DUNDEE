@@ -97,7 +97,9 @@ class AdminUserCreateSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=False, allow_blank=True, default="")
     email = serializers.EmailField()
     username = serializers.CharField(required=False, allow_blank=True)
-    role = serializers.CharField(required=False, default="Staff")
+    role = serializers.ChoiceField(
+        choices=("Administrator", "Staff"), required=False, default="Staff"
+    )
     department = serializers.CharField(required=False, allow_blank=True, default="")
     phone = serializers.CharField(required=False, allow_blank=True, default="")
     account_status = serializers.ChoiceField(
@@ -151,8 +153,12 @@ class AdminUserCreateSerializer(serializers.Serializer):
             must_change_password=must_change,
         )
         user._generated_temporary_password = raw_password  # type: ignore[attr-defined]
+        email_sent = False
         if validated_data.get("send_setup_email", True) and user.email:
-            send_account_setup_email(user, raw_password, username)
+            email_sent = bool(
+                send_account_setup_email(user, raw_password, username)
+            )
+        user._setup_email_sent = email_sent  # type: ignore[attr-defined]
         return user
 
 
@@ -161,7 +167,9 @@ class AdminUserUpdateSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False)
     username = serializers.CharField(required=False)
-    role = serializers.CharField(required=False)
+    role = serializers.ChoiceField(
+        choices=("Administrator", "Staff"), required=False
+    )
     department = serializers.CharField(required=False, allow_blank=True)
     phone = serializers.CharField(required=False, allow_blank=True)
     is_active = serializers.BooleanField(required=False)
@@ -214,8 +222,14 @@ class AdminUserUpdateSerializer(serializers.Serializer):
         profile.save()
 
         if temp_password and validated_data.get("send_reset_email", True) and instance.email:
-            send_admin_password_reset_email(instance, temp_password)
+            email_sent = bool(
+                send_admin_password_reset_email(instance, temp_password)
+            )
             instance._generated_temporary_password = temp_password  # type: ignore[attr-defined]
+            instance._setup_email_sent = email_sent  # type: ignore[attr-defined]
+        elif temp_password:
+            instance._generated_temporary_password = temp_password  # type: ignore[attr-defined]
+            instance._setup_email_sent = False  # type: ignore[attr-defined]
 
         if not instance.is_active:
             revoke_user_tokens(instance)

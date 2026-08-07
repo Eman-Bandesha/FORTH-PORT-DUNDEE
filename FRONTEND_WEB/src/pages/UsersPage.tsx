@@ -122,11 +122,20 @@ export function UsersPage() {
           generate_temporary_password: true,
           send_setup_email: true,
         })
-        setInfoMsg(
-          created.temporary_password
-            ? `User created. Temporary password (DEBUG only): ${created.temporary_password}`
-            : 'User created. A temporary password was emailed to their registered address.',
-        )
+        if (created.temporary_password) {
+          const mailNote = created.email_sent
+            ? 'Setup email was sent.'
+            : 'Email could not be sent (check Brevo on the server). Share this password manually.'
+          setInfoMsg(
+            `User created. Username: ${created.username}. Temporary password: ${created.temporary_password}. ${mailNote}`,
+          )
+        } else {
+          setInfoMsg(
+            created.email_sent
+              ? 'User created. A temporary password was emailed to their registered address.'
+              : 'User created, but the setup email failed. Reset password from the table actions.',
+          )
+        }
       }
       setModalOpen(false)
       await load()
@@ -184,11 +193,20 @@ export function UsersPage() {
     }
     try {
       const result = await adminResetPassword(user.id, true)
-      setInfoMsg(
-        result.temporary_password
-          ? `Password reset. Temporary password (DEBUG only): ${result.temporary_password}`
-          : 'Temporary password emailed. User must change it on next login.',
-      )
+      if (result.temporary_password) {
+        const mailNote = result.email_sent
+          ? 'Reset email was sent.'
+          : 'Email could not be sent. Share this password manually.'
+        setInfoMsg(
+          `Password reset. Temporary password: ${result.temporary_password}. ${mailNote}`,
+        )
+      } else {
+        setInfoMsg(
+          result.email_sent
+            ? 'Temporary password emailed. User must change it on next login.'
+            : 'Password reset, but email failed. Try again or check Brevo settings.',
+        )
+      }
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Password reset failed')

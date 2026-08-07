@@ -16,6 +16,7 @@ export interface AdminUser {
   last_login: string | null
   last_login_display: string | null
   temporary_password?: string
+  email_sent?: boolean
   profile?: {
     role: string
     department: string
@@ -25,12 +26,7 @@ export interface AdminUser {
   }
 }
 
-export const USER_ROLES = [
-  'Administrator',
-  'Manager',
-  'Supervisor',
-  'Staff',
-] as const
+export const USER_ROLES = ['Administrator', 'Staff'] as const
 
 export function fetchUsers(params: {
   search?: string
