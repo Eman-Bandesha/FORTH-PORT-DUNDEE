@@ -1,0 +1,44 @@
+# Secrets & local env
+.env
+.env.*
+!.env.example
+**/.env
+!**/.env.example
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/*.egg-info/
+**/.pytest_cache/
+**/db.sqlite3
+**/staticfiles/
+
+# Node
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Flutter
+**/FRONTEND_MOBILE/.dart_tool/
+**/FRONTEND_MOBILE/.packages
+**/FRONTEND_MOBILE/build/
+**/FRONTEND_MOBILE/.flutter-plugins
+**/FRONTEND_MOBILE/.flutter-plugins-dependencies
+**/FRONTEND_MOBILE/**/Generated.xcconfig
+**/FRONTEND_MOBILE/**/flutter_export_environment.sh
+
+# Media / uploads
+**/BACKEND/media/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.iml
+
+# Cursor / local
+.cursor/

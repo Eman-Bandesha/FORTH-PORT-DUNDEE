@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "Forth Ports Stock API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base", "value": "http://127.0.0.1:8000/api/v1" },
+    { "key": "access_token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "GET",
+        "url": "{{base}}/health/"
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "if (json.tokens && json.tokens.access) {",
+              "  pm.collectionVariables.set('access_token', json.tokens.access);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"johndoe\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": "{{base}}/auth/login/"
+      }
+    },
+    {
+      "name": "Auth - Me",
+      "request": { "method": "GET", "url": "{{base}}/auth/me/" }
+    },
+    {
+      "name": "Dashboard - Stats",
+      "request": { "method": "GET", "url": "{{base}}/dashboard/stats/" }
+    },
+    {
+      "name": "Items - List",
+      "request": {
+        "method": "GET",
+        "url": "{{base}}/items/?sort=name_asc&page=1"
+      }
+    },
+    {
+      "name": "Items - Create",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"code\": \"TEST001\",\n  \"name\": \"Test Item\",\n  \"quantity\": 10,\n  \"category\": \"Tools\",\n  \"unit\": \"Each\",\n  \"reorder_level\": 5,\n  \"location\": \"Main Warehouse\",\n  \"description\": \"Postman test\"\n}"
+        },
+        "url": "{{base}}/items/"
+      }
+    },
+    {
+      "name": "Movements - List stock out",
+      "request": {
+        "method": "GET",
+        "url": "{{base}}/movements/?type=stock_out&sort=newest_first"
+      }
+    },
+    {
+      "name": "Movements - Create stock out",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"stock_out\",\n  \"item_code\": \"PRN13DGTF\",\n  \"quantity\": 1,\n  \"requested_by\": \"John Doe\",\n  \"reason\": \"Maintenance work order\"\n}"
+        },
+        "url": "{{base}}/movements/"
+      }
+    },
+    {
+      "name": "Notifications",
+      "request": { "method": "GET", "url": "{{base}}/notifications/" }
+    },
+    {
+      "name": "Reports - Stock summary",
+      "request": { "method": "GET", "url": "{{base}}/reports/stock-summary/" }
+    }
+  ]
+}
